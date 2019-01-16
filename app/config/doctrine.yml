@@ -1,0 +1,55 @@
+# Doctrine Configuration
+doctrine:
+  dbal:
+    default_connection: default2
+    connections:
+      default1:
+        driver:   pdo_mysql
+        host:     '%database1_host%'
+        port:     '%database1_port%'
+        dbname:   '%database1_name%'
+        user:     '%database1_user%'
+        password: '%database1_password%'
+        charset:  UTF8
+      default2:
+        driver:   pdo_mysql
+        host:     '%database2_host%'
+        port:     '%database2_port%'
+        dbname:   '%database2_name%'
+        user:     '%database2_user%'
+        password: '%database2_password%'
+        charset:  UTF8
+
+  orm:
+    auto_generate_proxy_classes: '%kernel.debug%'
+    #auto_mapping: true
+    default_entity_manager: default2
+    entity_managers:
+      default1:
+        connection: default1
+        #metadata_cache_driver: apc
+        #query_cache_driver: apc
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+#        auto_mapping: true
+        mappings:
+          Bdd1Bundle: ~
+
+      default2:
+        connection: default2
+        #metadata_cache_driver: apc
+        #query_cache_driver: apc
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+#        auto_mapping: true
+        mappings:
+          Bdd2Bundle: ~
+
+
+services:
+  gedmo.listener.reference:
+#    class: Gedmo\References\ReferencesListener
+    class: AppBundle\Listener\GedmoReferencesListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default1 }
+      - { name: doctrine.event_subscriber, connection: default2 }
+    arguments:
+      - { default1: "@doctrine.orm.default1_entity_manager", default2: "@doctrine.orm.default2_entity_manager" }

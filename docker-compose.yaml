@@ -1,0 +1,46 @@
+version: "3.5"
+
+services:
+  dev:
+    build:
+      context: .
+      target: symfony_docker
+    container_name: dev
+    networks:
+      - dev
+      - nginx-proxy
+    restart: "on-failure:3"
+    depends_on:
+      - dev-db
+    volumes:
+      # Comment out the next line in production
+      - .:/var/www/html:rw,cached
+      # If you develop on Linux, comment out the following volumes to just use bind-mounted project directory from host
+      - /var/www/html/var/
+      - /var/www/html/var/cache/
+      - /var/www/html/var/logs/
+      - /var/www/html/var/sessions/
+    environment:
+      VIRTUAL_HOST: dev.dev,dev.local,dev.wip,dev.local.com
+
+  dev-db:
+    image: "mysql:5.7"
+    container_name: dev-db
+    networks:
+      - dev
+    volumes:
+          - ../mysql_dev/:/var/lib/mysql
+    restart: "on-failure:3"
+    command: --sql_mode=""
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: dev
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: secret
+
+networks:
+  dev:
+    name: dev
+  nginx-proxy:
+    external: true
+
