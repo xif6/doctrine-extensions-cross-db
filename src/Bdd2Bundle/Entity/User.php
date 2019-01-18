@@ -2,6 +2,7 @@
 
 namespace Bdd2Bundle\Entity;
 
+use AppBundle\Traits\ProxyEntity;
 use Bdd2Bundle\Entity\Category;
 use Bdd2Bundle\Entity\Tag;
 use Bdd2Bundle\Entity\UserTag;
@@ -18,22 +19,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class User
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     */
-    private $id;
+    use ProxyEntity;
 
     /**
      * @var Category
      *
      * @Gedmo\ReferenceOne(type="default1", class="Bdd1Bundle\Entity\User", identifier="id")
      */
-    private $user;
-
-
+    protected $proxy;
 
     /**
      * @var Collection|LinkedAccount[]
@@ -45,24 +38,6 @@ class User
      *     )
      */
     private $linkedAccounts;
-
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function __call($name, $arguments)
-    {
-        return $this->user->$name();
-    }
-
-
 
 
     /**

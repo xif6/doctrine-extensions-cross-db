@@ -2,11 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use Bdd1Bundle\Entity\User;
+use Bdd1Bundle\Entity\PhysicalAccount;
+use Bdd1Bundle\Entity\User as User1;
+use Bdd2Bundle\Entity\User as User2;
 use Bdd2Bundle\Entity\Category;
 use Bdd2Bundle\Entity\Game;
 use Bdd2Bundle\Entity\Gamer;
-use Bdd2Bundle\Entity\LinkedAccount;
+use Bdd1Bundle\Entity\LinkedAccount as LinkedAccount1;
+use Bdd2Bundle\Entity\LinkedAccount as LinkedAccount2;
 use Bdd2Bundle\Entity\Tag;
 use Bdd2Bundle\Entity\UserTag;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,8 +28,8 @@ class DefaultController extends Controller
         $em2 = $this->getDoctrine()->getManager('default2');
         //*
 
-        /** @var User[] $users */
-        $users = $this->getDoctrine()->getRepository(User::class, 'default1')->findAll();
+        /** @var User1[] $users */
+        $users = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
         /** @var Category[] $categories */
         $categories = $this->getDoctrine()->getRepository(Category::class, 'default2')->findAll();
         /** @var Tag[] $tags */
@@ -57,7 +60,7 @@ class DefaultController extends Controller
         $em2->clear();
 //*/
 
-        $users = $this->getDoctrine()->getRepository(User::class, 'default1')->findAll();
+        $users = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
         $categories = $this->getDoctrine()->getRepository(Category::class, 'default2')->findAll();
         $tags = $this->getDoctrine()->getRepository(Tag::class, 'default2')->findAll();
 //        $userTag = $this->getDoctrine()->getRepository(UserTag::class, 'default2')->findAll();
@@ -110,14 +113,42 @@ class DefaultController extends Controller
      */
     public function anaxagoAction(Request $request)
     {
-        /** @var User[] $users1 */
-        $users1 = $this->getDoctrine()->getRepository(User::class, 'default1')->findAll();
-        /** @var \Bdd2Bundle\Entity\User[] $users2 */
-        $users2 = $this->getDoctrine()->getRepository(\Bdd2Bundle\Entity\User::class, 'default2')->findAll();
-        /** @var \Bdd1Bundle\Entity\LinkedAccount[] $la1 */
-        $la1 = $this->getDoctrine()->getRepository(\Bdd1Bundle\Entity\LinkedAccount::class, 'default1')->findAll();
-        /** @var \Bdd2Bundle\Entity\LinkedAccount[] $la2 */
-        $la2 = $this->getDoctrine()->getRepository(\Bdd2Bundle\Entity\LinkedAccount::class, 'default2')->findAll();
+        $em1 = $this->getDoctrine()->getManager('default1');
+        $em2 = $this->getDoctrine()->getManager('default2');
+//*
+        $user = new User1();
+        $user->setName('u-toto-' . uniqid());
+        $em1->persist($user);
+
+        $la = new PhysicalAccount();
+        $la->setName('ph-' . uniqid());
+        $la->setOwner($user);
+        $em1->persist($la);
+
+        $em1->flush();
+//*/
+
+        $em1->clear();
+        $em2->clear();
+        $users1 = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
+        $users2 = $this->getDoctrine()->getRepository(User2::class, 'default2')->findAll();
+
+        $la1 = $this->getDoctrine()->getRepository(LinkedAccount1::class, 'default1')->findAll();
+        $la2 = $this->getDoctrine()->getRepository(LinkedAccount2::class, 'default2')->findAll();
+
+        dump($users1);
+        dump($users2);
+        dump($la1);
+        dump($la2);
+        die;
+        /** @var User1[] $users1 */
+        $users1 = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
+        /** @var User2[] $users2 */
+        $users2 = $this->getDoctrine()->getRepository(User2::class, 'default2')->findAll();
+        /** @var LinkedAccount1[] $la1 */
+        $la1 = $this->getDoctrine()->getRepository(LinkedAccount1::class, 'default1')->findAll();
+        /** @var LinkedAccount2[] $la2 */
+        $la2 = $this->getDoctrine()->getRepository(LinkedAccount2::class, 'default2')->findAll();
 
         dump($users1[0]);
         dump($users1[0]->getLinkedAccounts()[0]);

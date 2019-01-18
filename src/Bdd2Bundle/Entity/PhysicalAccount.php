@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class PhysicalAccount extends LinkedAccount
 {
     /**
-     * @ORM\Column(name="kyc_state", type="string", length=255)
+     * @ORM\Column(name="kyc_state", type="string", length=255, nullable=true)
      */
     protected $kycState;
 

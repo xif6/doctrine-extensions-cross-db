@@ -2,6 +2,7 @@
 
 namespace Bdd1Bundle\Entity;
 
+use AppBundle\Interfaces\ProxifyEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="linked_account")
  * @ORM\Entity(repositoryClass="Bdd1Bundle\Repository\LinkedAccountRepository")
  */
-abstract class LinkedAccount
+abstract class LinkedAccount implements ProxifyEntity
 {
     /**
      * @var int
@@ -103,5 +104,6 @@ abstract class LinkedAccount
 
         return $this;
     }
+
 }
 

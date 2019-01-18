@@ -2,6 +2,7 @@
 
 namespace Bdd1Bundle\Entity;
 
+use AppBundle\Interfaces\ProxifyEntity;
 use Bdd2Bundle\Entity\Category;
 use Bdd2Bundle\Entity\Tag;
 use Bdd2Bundle\Entity\UserTag;
@@ -16,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="Bdd1Bundle\Repository\UserRepository")
  */
-class User
+class User implements ProxifyEntity
 {
     /**
      * @var int

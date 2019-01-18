@@ -2,6 +2,7 @@
 
 namespace Bdd2Bundle\Entity;
 
+use AppBundle\Traits\ProxyEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -23,13 +24,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 abstract class LinkedAccount
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     */
-    protected $id;
+    use ProxyEntity;
 
     /**
      * @var Category
@@ -37,6 +32,7 @@ abstract class LinkedAccount
      * @Gedmo\ReferenceOne(type="default1", class="Bdd1Bundle\Entity\LinkedAccount", identifier="id")
      */
     protected $proxy;
+
     /**
      * @var User
      *
@@ -44,21 +40,6 @@ abstract class LinkedAccount
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $owner;
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function __call($name, $arguments)
-    {
-        return $this->proxy->$name();
-    }
 
     /**
      * Get owner
