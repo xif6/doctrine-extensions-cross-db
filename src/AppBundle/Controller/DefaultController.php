@@ -6,6 +6,7 @@ use Bdd1Bundle\Entity\User;
 use Bdd2Bundle\Entity\Category;
 use Bdd2Bundle\Entity\Game;
 use Bdd2Bundle\Entity\Gamer;
+use Bdd2Bundle\Entity\LinkedAccount;
 use Bdd2Bundle\Entity\Tag;
 use Bdd2Bundle\Entity\UserTag;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -101,5 +102,37 @@ class DefaultController extends Controller
         dump($this->getDoctrine()->getRepository(Game::class, 'default2')->findAll());
         dump($this->getDoctrine()->getRepository(Gamer::class, 'default2')->findAll());
         return new Response();
+    }
+
+
+    /**
+     * @Route("/anaxago", name="anaxago")
+     */
+    public function anaxagoAction(Request $request)
+    {
+        /** @var User[] $users1 */
+        $users1 = $this->getDoctrine()->getRepository(User::class, 'default1')->findAll();
+        /** @var \Bdd2Bundle\Entity\User[] $users2 */
+        $users2 = $this->getDoctrine()->getRepository(\Bdd2Bundle\Entity\User::class, 'default2')->findAll();
+        /** @var \Bdd1Bundle\Entity\LinkedAccount[] $la1 */
+        $la1 = $this->getDoctrine()->getRepository(\Bdd1Bundle\Entity\LinkedAccount::class, 'default1')->findAll();
+        /** @var \Bdd2Bundle\Entity\LinkedAccount[] $la2 */
+        $la2 = $this->getDoctrine()->getRepository(\Bdd2Bundle\Entity\LinkedAccount::class, 'default2')->findAll();
+
+        dump($users1[0]);
+        dump($users1[0]->getLinkedAccounts()[0]);
+        dump($users2[0]->getLinkedAccounts()[0]);
+        dump($users1[0]->getName());
+        dump($users2[0]->getName());
+
+
+
+        dump($la1[0]);
+        dump($la2[0]);
+
+//        dump($users1[0]->getLinkedAccounts()[0]->getOwner()->getName());
+//        dump($users2[0]->getLinkedAccounts()[0]->getOwner()->getName());
+
+        die;
     }
 }

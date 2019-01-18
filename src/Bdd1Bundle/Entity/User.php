@@ -55,9 +55,37 @@ class User
      */
     private $userTag;
 
+    /**
+     * @var Category
+     *
+     * @Gedmo\ReferenceOne(type="default2", class="Bdd2Bundle\Entity\User", identifier="id")
+     */
+    private $user;
+
+
+    /**
+     * @var Collection|LinkedAccount[]
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="LinkedAccount",
+     *     mappedBy="owner",
+     *     cascade={"persist"}
+     *     )
+     */
+    private $linkedAccounts;
+
+
+
     public function __construct()
     {
         $this->userTag = new ArrayCollection();
+        $this->linkedAccounts = new ArrayCollection();
+    }
+
+
+    public function __call($name, $arguments)
+    {
+        return $this->user->$name();
     }
 
     /**
@@ -269,6 +297,48 @@ class User
                 $tag->removeUserTag($userTag);
                 break;
             }
+        }
+
+        return $this;
+    }
+
+
+
+    /**
+     * Get linked accounts.
+     *
+     * @return Collection|LinkedAccount[]
+     */
+    public function getLinkedAccounts()
+    {
+        return $this->linkedAccounts;
+    }
+
+    /**
+     * Set linked accounts.
+     *
+     * @param Collection|LinkedAccount[] $linkedAccounts
+     *
+     * @return User
+     */
+    public function setLinkedAccounts(Collection $linkedAccounts): self
+    {
+        $this->linkedAccounts = $linkedAccounts;
+
+        return $this;
+    }
+
+    /**
+     * Add a linked account.
+     *
+     * @param LinkedAccount $linkedAccount
+     *
+     * @return User
+     */
+    public function addLinkedAccount(LinkedAccount $linkedAccount): self
+    {
+        if (!$this->linkedAccounts->contains($linkedAccount)) {
+            $this->linkedAccounts->add($linkedAccount);
         }
 
         return $this;
