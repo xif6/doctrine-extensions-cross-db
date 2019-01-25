@@ -12,6 +12,8 @@ use Bdd1Bundle\Entity\LinkedAccount as LinkedAccount1;
 use Bdd2Bundle\Entity\LinkedAccount as LinkedAccount2;
 use Bdd2Bundle\Entity\Tag;
 use Bdd2Bundle\Entity\UserTag;
+use Doctrine\ORM\NativeQuery;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,8 +30,20 @@ class DefaultController extends Controller
         $em2 = $this->getDoctrine()->getManager('default2');
         //*
 
+        $user = new User1();
+        $user->setName('u-toto-' . uniqid());
+        $em1->persist($user);
+        $em1->flush();
+
         /** @var User1[] $users */
         $users = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
+        dump($this->getDoctrine()->getRepository(User1::class, 'default1')->find(2));
+        dump($this->getDoctrine()->getRepository(User1::class, 'default1')->find('22bd65b0-2002-11e9-859f-0242ac150002'));
+        return $this->render('default/index.html.twig', [
+            'users' => $users,
+            'categories' => [],
+            'tags' => [],
+        ]);
         /** @var Category[] $categories */
         $categories = $this->getDoctrine()->getRepository(Category::class, 'default2')->findAll();
         /** @var Tag[] $tags */
@@ -165,5 +179,74 @@ class DefaultController extends Controller
 //        dump($users2[0]->getLinkedAccounts()[0]->getOwner()->getName());
 
         die;
+    }
+
+    /**
+     * @Route("/duplication/insert", name="duplication_insert")
+     */
+    public function duplicationInsertAction(Request $request)
+    {
+        $em1 = $this->getDoctrine()->getManager('default1');
+        $em2 = $this->getDoctrine()->getManager('default2');
+        $user = new User1();
+        $user->setName('u-toto-' . uniqid());
+        $em1->persist($user);
+        $em1->flush();
+        $em1->clear();
+
+
+        $users1 = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
+        $users2 = $this->getDoctrine()->getRepository(User2::class, 'default2')->findAll();
+        dump($users1);
+        dump($users2);
+        return new Response('<html><body></body></html>');
+    }
+
+
+    /**
+     * @Route("/duplication/update", name="duplication_update")
+     */
+    public function duplicationUpdateAction(Request $request)
+    {
+        $em1 = $this->getDoctrine()->getManager('default1');
+        $em2 = $this->getDoctrine()->getManager('default2');
+
+        /** @var User1[] $users1 */
+        $users1 = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
+
+        $users1[0]->setName('update - ' . uniqid());
+        $em1->flush();
+        $em1->clear();
+
+
+        $users1 = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
+        $users2 = $this->getDoctrine()->getRepository(User2::class, 'default2')->findAll();
+        dump($users1);
+        dump($users2);
+        return new Response('<html><body></body></html>');
+    }
+
+
+    /**
+     * @Route("/duplication/delete", name="duplication_delete")
+     */
+    public function duplicationDeleteAction(Request $request)
+    {
+        $em1 = $this->getDoctrine()->getManager('default1');
+        $em2 = $this->getDoctrine()->getManager('default2');
+
+        /** @var User1[] $users1 */
+        $users1 = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
+
+        $em1->remove($users1[2]);
+        $em1->flush();
+        $em1->clear();
+
+
+        $users1 = $this->getDoctrine()->getRepository(User1::class, 'default1')->findAll();
+        $users2 = $this->getDoctrine()->getRepository(User2::class, 'default2')->findAll();
+        dump($users1);
+        dump($users2);
+        return new Response('<html><body></body></html>');
     }
 }

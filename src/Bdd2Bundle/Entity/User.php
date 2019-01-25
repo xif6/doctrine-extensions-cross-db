@@ -2,10 +2,7 @@
 
 namespace Bdd2Bundle\Entity;
 
-use AppBundle\Traits\ProxyEntity;
-use Bdd2Bundle\Entity\Category;
-use Bdd2Bundle\Entity\Tag;
-use Bdd2Bundle\Entity\UserTag;
+use AppBundle\Interfaces\ProxifyEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,67 +14,56 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="Bdd2Bundle\Repository\UserRepository")
  */
-class User
+class User implements ProxifyEntity
 {
-    use ProxyEntity;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="guid")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="UUID")
+     */
+    private $id;
 
     /**
-     * @var Category
+     * @var string
      *
-     * @Gedmo\ReferenceOne(type="default1", class="Bdd1Bundle\Entity\User", identifier="id")
+     * @ORM\Column(name="name", type="string", length=255)
      */
-    protected $proxy;
+    private $name;
 
     /**
-     * @var Collection|LinkedAccount[]
+     * Get id
      *
-     * @ORM\OneToMany(
-     *     targetEntity="LinkedAccount",
-     *     mappedBy="owner",
-     *     cascade={"persist"}
-     *     )
+     * @return int
      */
-    private $linkedAccounts;
-
-
-    /**
-     * Get linked accounts.
-     *
-     * @return Collection|LinkedAccount[]
-     */
-    public function getLinkedAccounts()
+    public function getId()
     {
-        return $this->linkedAccounts;
+        return $this->id;
     }
 
     /**
-     * Set linked accounts.
+     * Set name
      *
-     * @param Collection|LinkedAccount[] $linkedAccounts
+     * @param string $name
      *
      * @return User
      */
-    public function setLinkedAccounts(Collection $linkedAccounts): self
+    public function setName($name)
     {
-        $this->linkedAccounts = $linkedAccounts;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Add a linked account.
+     * Get name
      *
-     * @param LinkedAccount $linkedAccount
-     *
-     * @return User
+     * @return string
      */
-    public function addLinkedAccount(LinkedAccount $linkedAccount): self
+    public function getName()
     {
-        if (!$this->linkedAccounts->contains($linkedAccount)) {
-            $this->linkedAccounts->add($linkedAccount);
-        }
-
-        return $this;
+        return $this->name;
     }
 }
 

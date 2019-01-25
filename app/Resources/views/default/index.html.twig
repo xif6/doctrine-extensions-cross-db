@@ -5,7 +5,7 @@
         <div id="container">
             <ul>
             {% for user in users %}
-                <li>{{ user.name }} - {#{ user.category.name }#}
+                <li>{{ user.name }} - {{ user.id }}
                     <ul>
                         {% for tag in user.tags %}
                             <li>{{ tag.name }}</li>
